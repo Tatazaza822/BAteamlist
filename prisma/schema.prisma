@@ -9,6 +9,20 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Student {
+  id      Int     @id @default(autoincrement())
+  name    String
+  Skill1  Int?
+  Skill2  Int?
+  Skill3  Int?
+  Skill4  Int?
+  Star    Int
+  Level   Int
+  E1      Int
+  E2      Int
+  E3      Int
 }

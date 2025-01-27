@@ -1,0 +1,16 @@
+-- CreateTable
+CREATE TABLE `Student` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
+    `Skill1` INTEGER NULL,
+    `Skill2` INTEGER NULL,
+    `Skill3` INTEGER NULL,
+    `Skill4` INTEGER NULL,
+    `Star` INTEGER NOT NULL,
+    `Level` INTEGER NOT NULL,
+    `E1` INTEGER NOT NULL,
+    `E2` INTEGER NOT NULL,
+    `E3` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
