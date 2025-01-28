@@ -4,6 +4,11 @@ export default function Page() {
                 <a href="./form">
                     <button className="add">Add a unit</button>
                 </a>
-
+                <a href="./build" className="px-4">
+                    <button className="add">Build a unit</button>
+                </a>
+                <a href="./form/edit" className="">
+                    <button className="add">Edit</button>
+                </a>
             </div>
   }

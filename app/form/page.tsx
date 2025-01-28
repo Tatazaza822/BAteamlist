@@ -1,184 +1,150 @@
-'use client'
+'use client';
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from 'react';
 
-type FormData = {
+type StudentData = {
+  id: number;
   name: string;
-  skill1: string;
-  skill2: string;
-  skill3: string;
-  skill4: string;
-  star: string;
-  level: string;
-  e1: string;
-  e2: string;
-  e3: string;
-}
+  Skill1: string;
+  Skill2: string;
+  Skill3: string;
+  Skill4: string;
+  Star: string;
+  Level: string;
+  E1: string;
+  E2: string;
+  E3: string;
+};
 
-export default function FormPage() {
-  const [formData, setFormData] = useState<FormData>({ name: "", skill1: "", skill2: "", skill3: "", skill4: "", star: "", level: "", e1: "", e2: "", e3: "" });
-  const [message, setMessage] = useState<string>("");
+export default function DatabaseView() {
+  const [students, setStudents] = useState<StudentData[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState<StudentData[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [message, setMessage] = useState<string>('');
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(true); // Keep dropdown visible initially
+  const dropdownRef = useRef<HTMLUListElement | null>(null); // Ref for dropdown
+  const inputRef = useRef<HTMLInputElement | null>(null); // Ref for input field
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  // Fetch data from the database
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/get-data');
+        const result = await response.json();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage("Submitting...");
-
-    try {
-      // Send POST request to the API
-      const response = await fetch('/api/submit-form', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setMessage('Data submitted successfully!');
-        setFormData({ name: '', skill1: "", skill2: "", skill3: "", skill4: "",star: "", level: "", e1: "", e2: "",e3: ""}); // Clear form after submit
-      } else {
-        setMessage('Error submitting data. Please try again.');
+        if (response.ok) {
+          setStudents(result);
+        } else {
+          setMessage(result.message || 'Failed to fetch data');
+        }
+      } catch (error) {
+        setMessage('Error fetching data');
       }
-    } catch (error) {
-      console.error('Error:', error);
-      setMessage('Something went wrong. Please try again.');
+    };
+
+    fetchData();
+  }, []);
+
+  // Handle selection of students (toggle selection by click)
+  const handleStudentClick = (student: StudentData) => {
+    setSelectedStudents((prevSelected) =>
+      prevSelected.some((selected) => selected.id === student.id)
+        ? prevSelected.filter((selected) => selected.id !== student.id) // Deselect
+        : [...prevSelected, student] // Select
+    );
+    // Re-enable dropdown if search query exists
+    if (searchQuery) {
+      setDropdownVisible(true); // Show the dropdown again if there's a search
     }
   };
 
+  // Handle changes in the search query
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    // Re-enable dropdown when the user types
+    if (value) {
+      setDropdownVisible(true);
+    } else {
+      setDropdownVisible(false); // Optionally hide dropdown when input is empty
+    }
+  };
+
+  // Close dropdown if clicked outside of the dropdown or the input field
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      setDropdownVisible(false); // Close the dropdown if click is outside
+    }
+  };
+
+  // Set up event listener for outside click
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto"  }}>
-      <h1 className="text-2xl font-bold text-gray-800 text-center">Enter Data</h1>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <label className="block text-sm font-medium text-gray-700">
-          Name:
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
+      <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Database View</h1>
+        {message && (
+          <div className={`p-4 mb-4 rounded ${message.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+            {message}
+          </div>
+        )}
+
+        {/* Student Dropdown */}
+        <div className="mb-6 relative">
+          <label htmlFor="student-search" className="block text-sm font-medium text-gray-700 mb-2">
+            Search Students
+          </label>
           <input
+            id="student-search"
+            ref={inputRef} // Set ref to input field
             type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
+            placeholder="Search for a student..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
           />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Skill1:
-          <input
-            type="number"
-            name="skill1"
-            value={formData.skill1}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Skill2:
-          <input
-            type="number"
-            name="skill2"
-            value={formData.skill2}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Skill3:
-          <input
-            type="number"
-            name="skill3"
-            value={formData.skill3}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Skill4:
-          <input
-            type="number"
-            name="skill4"
-            value={formData.skill4}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label >
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Star:
-          <input
-            type="number"
-            name="star"
-            value={formData.star}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Level:
-          <input
-            type="number"
-            name="level"
-            value={formData.level}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Equipment1:
-          <input
-            type="number"
-            name="e1"
-            value={formData.e1}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Equipment2:
-          <input
-            type="number"
-            name="e2"
-            value={formData.e2}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <label className="block text-sm font-medium text-gray-700">
-          Equipment3:
-          <input
-            type="number"
-            name="e3"
-            value={formData.e3}
-            onChange={handleChange}
-            className="mt-2 block w-full p-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-            required
-          />
-        </label>
-        <br />
-        <button type="submit" className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300">Submit</button>
-      </form>
-      <p>{message}</p>
+          {searchQuery && dropdownVisible && (
+            <ul ref={dropdownRef} className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-40 overflow-y-auto mt-1">
+              {students
+                .filter((student) => student.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                .map((student) => (
+                  <li key={student.id}>
+                    <div
+                      className={`flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                        selectedStudents.some((selected) => selected.id === student.id) ? 'bg-blue-100' : ''
+                      }`}
+                      onClick={() => handleStudentClick(student)}
+                    >
+                      <span>{student.name}</span>
+                    </div>
+                  </li>
+                ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Display selected students in a single chunk of text */}
+        {selectedStudents.length > 0 && (
+          <div className="mt-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Selected Students</h2>
+            <div className="whitespace-pre-wrap">
+              {selectedStudents.map((student) => (
+                <div key={student.id} className="text-sm mb-2">
+                  {/* Display the data as a single chunk of text */}
+                  {`${student.name} ${student.Skill1}${student.Skill2}${student.Skill3}${student.Skill4} ${student.Star} Lv.${student.Level} ${student.E1}${student.E2}${student.E3}`}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -16,13 +16,13 @@ datasource db {
 model Student {
   id      Int     @id @default(autoincrement())
   name    String
-  Skill1  Int?
-  Skill2  Int?
-  Skill3  Int?
-  Skill4  Int?
-  Star    Int
-  Level   Int
-  E1      Int
-  E2      Int
-  E3      Int
+  Skill1  String
+  Skill2  String
+  Skill3  String
+  Skill4  String
+  Star    String
+  Level   String
+  E1      String
+  E2      String
+  E3      String
 }
