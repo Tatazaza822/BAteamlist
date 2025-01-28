@@ -5,7 +5,7 @@ export default function Page() {
                     <button className="add">Add a unit</button>
                 </a>
                 <a href="./build" className="px-4">
-                    <button className="add">Build a unit</button>
+                    <button className="add">Build a team</button>
                 </a>
                 <a href="./form/edit" className="">
                     <button className="add">Edit</button>

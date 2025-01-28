@@ -89,7 +89,7 @@ export default function DatabaseView() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10 px-4">
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Database View</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Build a team</h1>
         {message && (
           <div className={`p-4 mb-4 rounded ${message.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
             {message}
