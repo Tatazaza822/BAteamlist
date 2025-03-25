@@ -144,6 +144,12 @@ export default function DatabaseView() {
             </div>
           </div>
         )}
+        <div className="flex justify-end mt-4">
+        <a href="/" className="px-6 py-2 bg-gray-500 text-white rounded-lg shadow hover:bg-gray-600">
+              Back
+        </a>
+        </div>
+        
       </div>
     </div>
   );
