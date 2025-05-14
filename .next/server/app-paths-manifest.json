@@ -1,6 +1,6 @@
 {
-  "/api/get-data/route": "app/api/get-data/route.js",
-  "/form/page": "app/form/page.js",
+  "/api/students/route": "app/api/students/route.js",
   "/page": "app/page.js",
-  "/build/page": "app/build/page.js"
+  "/form/edit/page": "app/form/edit/page.js",
+  "/video/page": "app/video/page.js"
 }

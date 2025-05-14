@@ -11,25 +11,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/form/page": [
+    "/video/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/form/page.js"
-    ],
-    "/api/get-data/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/get-data/route.js"
-    ],
-    "/api/submit-form/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/submit-form/route.js"
-    ],
-    "/build/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/build/page.js"
+      "static/chunks/app/video/page.js"
     ],
     "/form/edit/page": [
       "static/chunks/webpack.js",

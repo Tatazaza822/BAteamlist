@@ -10,5 +10,8 @@ export default function Page() {
                 <a href="./form/edit" className="">
                     <button className="add">Edit</button>
                 </a>
+                <a href="./video" className="px-4">
+                    <button className="add">Video</button>
+                </a>
             </div>
   }
